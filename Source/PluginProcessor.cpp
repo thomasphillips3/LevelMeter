@@ -132,8 +132,9 @@ bool LevelMeterAudioProcessor::isBusesLayoutSupported (const BusesLayout& layout
 void LevelMeterAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
-    rmsLevelLeft = buffer.getRMSLevel(0, 0, buffer.getNumSamples());
-    rmsLevelRight = buffer.getRMSLevel(1, 0, buffer.getNumSamples());
+    
+    rmsLevelLeft = Decibels::gainToDecibels(buffer.getRMSLevel(0, 0, buffer.getNumSamples()));
+    rmsLevelRight = Decibels::gainToDecibels(buffer.getRMSLevel(1, 0, buffer.getNumSamples()));
 }
 
 //==============================================================================
