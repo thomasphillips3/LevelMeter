@@ -93,8 +93,11 @@ void LevelMeterAudioProcessor::changeProgramName (int index, const juce::String&
 //==============================================================================
 void LevelMeterAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    rmsLevelLeft.reset(sampleRate, 0.5);
+    rmsLevelRight.reset(sampleRate, 0.5);
+    
+    rmsLevelLeft.setCurrentAndTargetValue(-100.f);
+    rmsLevelRight.setCurrentAndTargetValue(-100.f);
 }
 
 void LevelMeterAudioProcessor::releaseResources()
@@ -132,29 +135,23 @@ bool LevelMeterAudioProcessor::isBusesLayoutSupported (const BusesLayout& layout
 void LevelMeterAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
-    auto totalNumInputChannels  = getTotalNumInputChannels();
-    auto totalNumOutputChannels = getTotalNumOutputChannels();
-
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
-    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
-
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    rmsLevelLeft.skip(buffer.getNumSamples());
+    rmsLevelRight.skip(buffer.getNumSamples());
+    
     {
-        auto* channelData = buffer.getWritePointer (channel);
-
-        // ..do something to the data...
+        const auto value = Decibels::gainToDecibels(buffer.getRMSLevel(0, 0, buffer.getNumSamples()));
+        if (value < rmsLevelLeft.getCurrentValue())
+            rmsLevelLeft.setTargetValue(value);
+        else
+            rmsLevelLeft.setCurrentAndTargetValue(value);
+    }
+    
+    {
+        const auto value = Decibels::gainToDecibels(buffer.getRMSLevel(1, 0, buffer.getNumSamples()));
+        if (value < rmsLevelRight.getCurrentValue())
+            rmsLevelRight.setTargetValue(value);
+        else
+            rmsLevelRight.setCurrentAndTargetValue(value);
     }
 }
 
@@ -183,6 +180,15 @@ void LevelMeterAudioProcessor::setStateInformation (const void* data, int sizeIn
     // whose contents will have been created by the getStateInformation() call.
 }
 
+float LevelMeterAudioProcessor::getRmsValue(const int channel) const
+{
+    jassert(channel == 0 || channel == 1);
+    if (channel == 0)
+        return rmsLevelLeft.getCurrentValue();
+    else if (channel == 1)
+        return rmsLevelRight.getCurrentValue();
+    return 0.f;
+}
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()

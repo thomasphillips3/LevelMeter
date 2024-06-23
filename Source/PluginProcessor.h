@@ -53,7 +53,8 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    float getRmsValue(const int channel) const;
 private:
-    //==============================================================================
+    LinearSmoothedValue<float> rmsLevelLeft, rmsLevelRight;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LevelMeterAudioProcessor)
 };
