@@ -162,6 +162,15 @@ void LevelMeterAudioProcessor::setStateInformation (const void* data, int sizeIn
     // whose contents will have been created by the getStateInformation() call.
 }
 
+float LevelMeterAudioProcessor::getRmsValue(const int channel) const
+{
+    jassert(channel == 0 || channel == 1);
+    if (channel == 0)
+        return rmsLevelLeft;
+    else if (channel == 1)
+        return rmsLevelRight;
+    return 0.f;
+}
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()

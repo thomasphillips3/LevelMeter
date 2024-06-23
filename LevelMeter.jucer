@@ -5,6 +5,10 @@
               companyName="bombest" companyWebsite="bomb.best" companyEmail="thomasphillips3@gmail.com">
   <MAINGROUP id="dMBFmy" name="LevelMeter">
     <GROUP id="{FAB5BC9A-7506-79F7-E21D-AAC708E443A8}" name="Source">
+      <GROUP id="{25261860-4541-9ADF-84B5-FD6D16905C18}" name="Component">
+        <FILE id="noEioD" name="HorizontalMeter.h" compile="0" resource="0"
+              file="Source/Component/HorizontalMeter.h"/>
+      </GROUP>
       <FILE id="i3D9rf" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="B8CxRZ" name="PluginProcessor.h" compile="0" resource="0"
