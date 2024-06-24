@@ -33,19 +33,21 @@ void LevelMeterAudioProcessorEditor::timerCallback()
 {
     horizontalMeterL.setLevel(audioProcessor.getRmsValue(0));
     horizontalMeterR.setLevel(audioProcessor.getRmsValue(1));
+    
     horizontalMeterL.repaint();
     horizontalMeterR.repaint();
 }
 //==============================================================================
 void LevelMeterAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    g.fillAll (Colours::darkgrey);
 }
 
 void LevelMeterAudioProcessorEditor::resized()
 {
     horizontalMeterL.setBounds(100, 100, 200, 15);
     horizontalMeterR.setBounds(100, 120, 200, 15);
-    verticalGradientMeterL.setBounds(100, 200, 15, 200);
-    verticalGradientMeterR.setBounds(120, 200, 15, 200);
+    
+    verticalGradientMeterL.setBounds(100, 200, 25, 200);
+    verticalGradientMeterR.setBounds(120, 200, 25, 200);
 }

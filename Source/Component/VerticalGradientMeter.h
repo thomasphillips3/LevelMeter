@@ -20,6 +20,7 @@ namespace Gui
         VerticalGradientMeter(std::function<float()>&& valueFunction) : valueSupplier(std::move(valueFunction))
         {
             startTimerHz(24);
+            grill = ImageCache::getFromMemory(BinaryData::MeterGrill_png, BinaryData::MeterGrill_pngSize);
         }
         
         void paint(Graphics& g) override
@@ -31,6 +32,11 @@ namespace Gui
             g.setGradientFill(gradient);
             const auto scaledY = jmap(level, -60.f, 6.f, 0.f, static_cast<float>(getHeight()));
             g.fillRect(bounds.removeFromBottom(scaledY));
+        }
+        
+        void paintOverChildren(Graphics& g) override
+        {
+            g.drawImage(grill, getLocalBounds().toFloat().reduced(2.f));
         }
         
         void resized() override
@@ -53,5 +59,6 @@ namespace Gui
     private:
         std::function<float()> valueSupplier;
         ColourGradient gradient {};
+        Image grill;
     };
 }
