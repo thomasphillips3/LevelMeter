@@ -26,7 +26,7 @@ namespace Gui
         void paint(Graphics& g) override
         {
             const auto level = valueSupplier();
-            auto bounds = getLocalBounds().toFloat();
+            auto bounds = getLocalBounds().toFloat().reduced(2.f);
             g.setColour(Colours::black);
             g.fillRect(bounds);
             g.setGradientFill(gradient);
@@ -36,7 +36,7 @@ namespace Gui
         
         void paintOverChildren(Graphics& g) override
         {
-            g.drawImage(grill, getLocalBounds().toFloat().reduced(2.f));
+            g.drawImage(grill, getLocalBounds().toFloat());
         }
         
         void resized() override
