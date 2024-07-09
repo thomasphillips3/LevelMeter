@@ -11,6 +11,8 @@
       <GROUP id="{25261860-4541-9ADF-84B5-FD6D16905C18}" name="Component">
         <FILE id="noEioD" name="HorizontalMeter.h" compile="0" resource="0"
               file="Source/Component/HorizontalMeter.h"/>
+        <FILE id="jnhbJU" name="VerticalDiscreteMeter.h" compile="0" resource="0"
+              file="Source/Component/VerticalDiscreteMeter.h"/>
         <FILE id="ZRNxUk" name="VerticalGradientMeter.h" compile="0" resource="0"
               file="Source/Component/VerticalGradientMeter.h"/>
       </GROUP>
