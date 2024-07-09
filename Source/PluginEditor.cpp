@@ -13,15 +13,21 @@
 LevelMeterAudioProcessorEditor::LevelMeterAudioProcessorEditor (LevelMeterAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p),
     verticalGradientMeterL([&]() { return audioProcessor.getRmsValue(0); }),
-    verticalGradientMeterR([&]() { return audioProcessor.getRmsValue(1); })
+    verticalGradientMeterR([&]() { return audioProcessor.getRmsValue(1); }),
+    verticalDiscreteMeterL([&]() { return audioProcessor.getRmsValue(0); }),
+    verticalDiscreteMeterR([&]() { return audioProcessor.getRmsValue(1); })
 {
     addAndMakeVisible(horizontalMeterL);
     addAndMakeVisible(horizontalMeterR);
-    
+
     addAndMakeVisible(verticalGradientMeterL);
     addAndMakeVisible(verticalGradientMeterR);
-    
+
+    addAndMakeVisible(verticalDiscreteMeterL);
+    addAndMakeVisible(verticalDiscreteMeterR);
+
     setSize (400, 500);
+
     startTimerHz(24);
 }
 
@@ -49,5 +55,8 @@ void LevelMeterAudioProcessorEditor::resized()
     horizontalMeterR.setBounds(100, 120, 200, 15);
     
     verticalGradientMeterL.setBounds(100, 200, 25, 200);
-    verticalGradientMeterR.setBounds(120, 200, 25, 200);
+    verticalGradientMeterR.setBounds(130, 200, 25, 200);
+    
+    verticalDiscreteMeterL.setBounds(200, 200, 25, 200);
+    verticalDiscreteMeterR.setBounds(230, 200, 25, 200);
 }
