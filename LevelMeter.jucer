@@ -9,6 +9,7 @@
         <FILE id="DQjhry" name="MeterGrill.png" compile="0" resource="1" file="Assets/MeterGrill.png"/>
       </GROUP>
       <GROUP id="{25261860-4541-9ADF-84B5-FD6D16905C18}" name="Component">
+        <FILE id="CrU1PT" name="CircularMeter.h" compile="0" resource="0" file="Source/Component/CircularMeter.h"/>
         <FILE id="noEioD" name="HorizontalMeter.h" compile="0" resource="0"
               file="Source/Component/HorizontalMeter.h"/>
         <FILE id="jnhbJU" name="VerticalDiscreteMeter.h" compile="0" resource="0"
