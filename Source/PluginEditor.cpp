@@ -124,8 +124,12 @@ void LevelMeterAudioProcessorEditor::resized()
     horizontalMeterL.setBounds(horizontalMeterBounds.removeFromTop(horizontalMeterBounds.proportionOfHeight(0.5f)).reduced(5));
     horizontalMeterR.setBounds(horizontalMeterBounds.reduced(5));
     
-    verticalGradientMeterL.setBounds(100, 200, 25, 200);
-    verticalGradientMeterR.setBounds(130, 200, 25, 200);
+    auto verticalMeterBounds = bounds.removeFromTop(container.proportionOfHeight(0.35f)).reduced(container.proportionOfWidth(0.1f), 5);
+    auto verticalMeter1 = verticalMeterBounds.removeFromLeft(verticalMeterBounds.proportionOfWidth(0.5f))
+        .withSizeKeepingCentre(55, 200);
+    verticalGradientMeterL.setBounds(verticalMeter1.removeFromLeft(25));
+    verticalMeter1.removeFromLeft(5);
+    verticalGradientMeterR.setBounds(verticalMeter1);
     
     verticalDiscreteMeterL.setBounds(200, 200, 25, 200);
     verticalDiscreteMeterR.setBounds(230, 200, 25, 200);
