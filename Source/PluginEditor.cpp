@@ -120,8 +120,9 @@ void LevelMeterAudioProcessorEditor::resized()
     rmsPeriodSlider.setBounds(controlBounds.removeFromTop(labelHeight));
     enableSmoothingButton.setBounds(controlBounds);
     
-    horizontalMeterL.setBounds(100, 100, 200, 15);
-    horizontalMeterR.setBounds(100, 120, 200, 15);
+    auto horizontalMeterBounds = bounds.removeFromTop(container.proportionOfHeight(0.1f)).reduced(5);
+    horizontalMeterL.setBounds(horizontalMeterBounds.removeFromTop(horizontalMeterBounds.proportionOfHeight(0.5f)).reduced(5));
+    horizontalMeterR.setBounds(horizontalMeterBounds.reduced(5));
     
     verticalGradientMeterL.setBounds(100, 200, 25, 200);
     verticalGradientMeterR.setBounds(130, 200, 25, 200);
