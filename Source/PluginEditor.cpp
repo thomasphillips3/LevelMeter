@@ -136,6 +136,9 @@ void LevelMeterAudioProcessorEditor::resized()
     verticalMeter2.removeFromLeft(5);
     verticalDiscreteMeterR.setBounds(verticalMeter2);
 
-    circularMeterL.setBounds(300, 200, 100, 100);
-    circularMeterR.setBounds(300, 300, 100, 100);
+    auto circularMeterBounds = bounds.removeFromTop(container.proportionOfHeight(0.3f)).reduced(5);
+    const auto diameter = jmin(circularMeterBounds.getWidth(), circularMeterBounds.getHeight());
+    circularMeterBounds = circularMeterBounds.withSizeKeepingCentre(diameter, diameter);
+    circularMeterL.setBounds(circularMeterBounds);
+    circularMeterR.setBounds(circularMeterBounds);
 }
