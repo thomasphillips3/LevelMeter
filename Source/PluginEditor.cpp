@@ -141,4 +141,9 @@ void LevelMeterAudioProcessorEditor::resized()
     circularMeterBounds = circularMeterBounds.withSizeKeepingCentre(diameter, diameter);
     circularMeterL.setBounds(circularMeterBounds);
     circularMeterR.setBounds(circularMeterBounds);
+    
+    auto sliderBounds = bounds.reduced(5);
+    sliderBounds = sliderBounds.withSizeKeepingCentre(sliderBounds.proportionOfWidth(0.6f), sliderBounds.getHeight());
+    leftSlider.setBounds(sliderBounds.removeFromLeft(sliderBounds.proportionOfWidth(0.5f)));
+    rightSlider.setBounds(sliderBounds);
 }
