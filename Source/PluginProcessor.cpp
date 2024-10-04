@@ -1,31 +1,30 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
-
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
 //==============================================================================
 LevelMeterAudioProcessor::LevelMeterAudioProcessor()
-#ifndef JucePlugin_PreferredChannelConfigurations
      : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
                        .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                     #endif
-                       )
-#endif
+                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)),
+parameters(*this, nullptr, "LevelMeter", AudioProcessorValueTreeState::ParameterLayout{
+    std::make_unique<AudioParameterFloat>("left", "Left", -60.f, 12.f, 0.f),
+    std::make_unique<AudioParameterFloat>("right", "Right", -60.f, 12.f, 0.f),
+    std::make_unique<AudioParameterInt>("rmsPeriod", "Period", 1, 500, 50),
+    std::make_unique<AudioParameterBool>("smoothing", "Enable Smoothing", true)
+})
 {
+    parameters.addParameterListener("left", this);
+    parameters.addParameterListener("right", this);
+    parameters.addParameterListener("rmsPeriod", this);
+    parameters.addParameterListener("smoothing", this);
 }
 
 LevelMeterAudioProcessor::~LevelMeterAudioProcessor()
 {
+    parameters.removeParameterListener("left", this);
+    parameters.removeParameterListener("right", this);
+    parameters.removeParameterListener("rmsPeriod", this);
+    parameters.removeParameterListener("smoothing", this);
 }
 
 //==============================================================================
@@ -98,6 +97,12 @@ void LevelMeterAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     
     rmsLevelLeft.setCurrentAndTargetValue(-100.f);
     rmsLevelRight.setCurrentAndTargetValue(-100.f);
+    
+    gainLeft.reset(sampleRate, 0.2);
+    gainLeft.setCurrentAndTargetValue(Decibels::decibelsToGain(parameters.getRawParameterValue("left")->load()));
+    
+    gainRight.reset(sampleRate, 0.2);
+    gainRight.setCurrentAndTargetValue(Decibels::decibelsToGain(parameters.getRawParameterValue("right")->load()));
 }
 
 void LevelMeterAudioProcessor::releaseResources()
@@ -180,7 +185,7 @@ void LevelMeterAudioProcessor::setStateInformation (const void* data, int sizeIn
     // whose contents will have been created by the getStateInformation() call.
 }
 
-float LevelMeterAudioProcessor::getRmsValue(const int channel) const
+float LevelMeterAudioProcessor::getRmsLevel(const int channel) const
 {
     jassert(channel == 0 || channel == 1);
     if (channel == 0)
@@ -194,4 +199,16 @@ float LevelMeterAudioProcessor::getRmsValue(const int channel) const
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new LevelMeterAudioProcessor();
+}
+
+void LevelMeterAudioProcessor::parameterChanged(const String& parameterID, float newValue)
+{
+    if (parameterID.equalsIgnoreCase("left"))
+        gainLeft.setTargetValue(Decibels::decibelsToGain(newValue));
+    if (parameterID.equalsIgnoreCase("right"))
+        gainRight.setTargetValue(Decibels::decibelsToGain(newValue));
+    if (parameterID.equalsIgnoreCase("rmsPeriod"))
+        rmsWindowSize = static_cast<int>(sampleRate * newValue)/1000;
+    if (parameterID.equalsIgnoreCase("smoothing"))
+        isSmoothed = static_cast<bool>(newValue);
 }

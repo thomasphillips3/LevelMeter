@@ -7,9 +7,6 @@
 #include "Component/VerticalDiscreteMeter.h"
 #include "Component/CircularMeter.h"
 
-//==============================================================================
-/**
-*/
 class LevelMeterAudioProcessorEditor  : public juce::AudioProcessorEditor, public Timer
 {
 public:
@@ -22,6 +19,19 @@ public:
 
 private:
     LevelMeterAudioProcessor& audioProcessor;
+    
+    Slider leftSlider, rightSlider, rmsPeriodSlider;
+    AudioProcessorValueTreeState::SliderAttachment leftSliderAttachment, rightSliderAttachment, rmsPeriodAttachment;
+    ToggleButton enableSmoothingButton;
+    AudioProcessorValueTreeState::ButtonAttachment enableSmoothingAttachment;
+    
+    Label rmsLevelHeading1, rmsLevelHeading2;
+    Label currentRmsLabel, maxRmsLabel;
+    Label currentRmsValue, maxRmsValue;
+    Label rmsPeriodLabel;
+    float maxRusLeft{}, maxRmsRight{};
+    int framesElapsed = 0;
+    
     Gui::HorizontalMeter horizontalMeterL, horizontalMeterR;
     Gui::VerticalGradientMeter verticalGradientMeterL, verticalGradientMeterR;
     Gui::VerticalDiscreteMeter verticalDiscreteMeterL, verticalDiscreteMeterR;

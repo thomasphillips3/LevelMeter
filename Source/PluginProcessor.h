@@ -1,11 +1,3 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
-
 #pragma once
 
 #include <JuceHeader.h>
@@ -13,7 +5,8 @@
 //==============================================================================
 /**
 */
-class LevelMeterAudioProcessor  : public juce::AudioProcessor
+class LevelMeterAudioProcessor  : public juce::AudioProcessor,
+    public AudioProcessorValueTreeState::Listener
 {
 public:
     //==============================================================================
@@ -53,8 +46,18 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-    float getRmsValue(const int channel) const;
+    void parameterChanged(const String& parameterID, float newValue) override;
+    AudioProcessorValueTreeState& getApvts() { return parameters; }
+    std::vector<float> getRmsLevels();
+    float getRmsLevel(const int channel) const;
 private:
     LinearSmoothedValue<float> rmsLevelLeft, rmsLevelRight;
+    AudioProcessorValueTreeState parameters;
+    LinearSmoothedValue<float> gainLeft, gainRight;
+    
+    int rmsWindowSize = 50;
+    double sampleRate = 44'100.0;
+    bool isSmoothed = true;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LevelMeterAudioProcessor)
 };
